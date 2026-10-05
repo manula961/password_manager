@@ -26,7 +26,7 @@ Security note: this prototype deliberately does **not** claim production-grade v
 
 ## Database and sync service
 
-The planned backend is **Supabase**: PostgreSQL + Auth + Storage + optional Realtime. Aegis remains zero-knowledge: clients encrypt vault data before sync; Supabase stores ciphertext, encrypted key envelopes, and minimal sync/account metadata. See `docs/DATABASE.md` and `supabase/schema.sql`.
+The deployment target is an **Oracle Cloud Infrastructure (OCI) VM** running our own API/sync service and PostgreSQL. Aegis remains zero-knowledge: clients encrypt vault data before sync; the server stores ciphertext, encrypted key envelopes, and minimal sync/account metadata. See `docs/DATABASE.md` and `server/schema.sql`.
 
 ## Full product scope
 
