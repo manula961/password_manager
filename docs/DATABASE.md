@@ -1,14 +1,31 @@
-# Database service: Supabase + PostgreSQL
+# Database and hosting: Oracle Cloud VM + PostgreSQL
 
-Aegis uses Supabase as the cloud control plane: PostgreSQL for encrypted sync records, Auth for account sessions, Storage for client-encrypted attachments, and Realtime where useful for sync notifications.
+Aegis is designed to run on an Oracle Cloud Infrastructure (OCI) Linux VM with a self-hosted application stack. It does not depend on Supabase or another database-as-a-service provider.
+
+## Deployment layout
+
+Internet -> HTTPS reverse proxy -> Aegis API/sync service -> PostgreSQL
+
+PostgreSQL is not exposed publicly. Only the HTTPS application endpoint should be internet-facing. Administrative SSH access should be key-based and tightly restricted.
 
 ## Zero-knowledge boundary
-The database MUST NOT receive plaintext vault item contents, passwords, TOTP seeds, recovery codes, private keys, decrypted attachments, the master password, or unwrapped vault/item keys.
 
-Clients encrypt before upload and decrypt after download. Server-side rows contain ciphertext envelopes plus the minimum routing/version metadata required for sync.
+The server MUST NOT receive plaintext vault item contents, passwords, TOTP seeds, recovery codes, private keys, decrypted attachments, the master password, or unwrapped vault/item keys.
+
+Clients encrypt before upload and decrypt after download. Server-side rows contain ciphertext envelopes plus the minimum routing/version metadata required for authentication, authorization and synchronization.
+
+## Services
+
+- Aegis API: authentication/session control, device management, encrypted sync, sharing and recovery coordination
+- PostgreSQL: encrypted vault records and operational metadata
+- encrypted attachment store: initially VM-backed persistent storage; object storage can be added later without changing vault cryptography
+- reverse proxy: TLS termination, security headers and request limits
+- backup job: encrypted database and attachment backups
+- monitoring: service health, resource use and security events without logging vault secrets
 
 ## Core tables
-- profiles: non-secret account preferences
+
+- accounts: account identity and password-auth verifier/session metadata
 - vaults: vault ownership and encrypted vault-key envelope
 - vault_members: family/team access and wrapped member keys
 - vault_items: encrypted item envelopes and sync version
@@ -19,10 +36,12 @@ Clients encrypt before upload and decrypt after download. Server-side rows conta
 - recovery_methods: encrypted recovery envelopes
 - sync_cursors: per-device sync state
 
-Attachments are encrypted locally before Supabase Storage upload. Object paths use opaque IDs.
+## Security rules
 
-## Authorization
-Every exposed table uses Row Level Security. Policies must check actual ownership/membership, not merely the authenticated role. Update policies use both USING and WITH CHECK. The frontend uses only a publishable key; service-role/secret keys never ship to clients.
+The API owns database authorization. Database credentials never ship to Web, Android, iOS, desktop, browser extensions or CLI clients. PostgreSQL listens only on a private/container network. Use least-privilege database roles, parameterized queries, TLS externally, rate limiting, short-lived sessions, CSRF protection where applicable, strict origin handling, encrypted backups and regular patching.
+
+The account-authentication password flow must be cryptographically separated from the vault-unlock key derivation. The master password and derived vault keys never become server secrets.
 
 ## Production gate
-Do not call the product production-secure until the cryptographic protocol, recovery design, native keystore integrations, extension boundary, and sync conflict behavior have independent security review.
+
+Do not call the product production-secure until the cryptographic protocol, authentication protocol, recovery design, native keystore integrations, extension boundary, API authorization, deployment hardening, backup/restore procedure and sync conflict behavior have independent security review.
