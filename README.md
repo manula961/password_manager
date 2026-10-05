@@ -22,3 +22,12 @@ Implemented in this slice: responsive dashboard, unified navigation, vault searc
 - `packages/shared` — shared models, sync protocol, validation
 
 Security note: this prototype deliberately does **not** claim production-grade vault encryption yet. Production cryptography needs an audited design (Argon2id KDF, authenticated encryption, key hierarchy, secure platform keystores, memory/clipboard handling, recovery model, and threat-model review) before real secrets are entrusted to it.
+
+
+## Database and sync service
+
+The planned backend is **Supabase**: PostgreSQL + Auth + Storage + optional Realtime. Aegis remains zero-knowledge: clients encrypt vault data before sync; Supabase stores ciphertext, encrypted key envelopes, and minimal sync/account metadata. See `docs/DATABASE.md` and `supabase/schema.sql`.
+
+## Full product scope
+
+See `docs/FEATURES.md` for the complete vault, generator, autofill, security, privacy, device, sharing, recovery, identity, developer, and cross-platform feature map. iOS/iPadOS and CLI shells are included alongside Web, Android, desktop, and browser-extension targets.
