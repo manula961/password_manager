@@ -13,5 +13,5 @@ create index if not exists auth_sessions_user_idx on auth_sessions(user_id);crea
 
 create table if not exists vault_sync(user_id uuid primary key references accounts(id) on delete cascade,revision bigint not null default 0,envelope jsonb not null,updated_at timestamptz not null default now());
 
-create table if not exists vault_sync_devices(user_id uuid not null references accounts(id) on delete cascade,device_id uuid not null,ack_revision bigint not null default 0,last_seen_at timestamptz not null default now(),primary key(user_id,device_id));
+create table if not exists vault_sync_devices(user_id uuid not null references accounts(id) on delete cascade,device_id uuid not null,ack_revision bigint not null default 0,last_seen_at timestamptz not null default now(),revoked_at timestamptz,label text,platform text,primary key(user_id,device_id));
 create index if not exists vault_sync_devices_user_seen_idx on vault_sync_devices(user_id,last_seen_at);
