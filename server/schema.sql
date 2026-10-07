@@ -12,3 +12,6 @@ create table if not exists security_events(id bigint generated always as identit
 create index if not exists auth_sessions_user_idx on auth_sessions(user_id);create index if not exists auth_sessions_expiry_idx on auth_sessions(expires_at);create index if not exists vaults_owner_idx on vaults(owner_id);create index if not exists vault_items_vault_idx on vault_items(vault_id,updated_at);create index if not exists devices_user_idx on devices(user_id);create index if not exists security_events_user_idx on security_events(user_id,created_at desc);
 
 create table if not exists vault_sync(user_id uuid primary key references accounts(id) on delete cascade,revision bigint not null default 0,envelope jsonb not null,updated_at timestamptz not null default now());
+
+create table if not exists vault_sync_devices(user_id uuid not null references accounts(id) on delete cascade,device_id uuid not null,ack_revision bigint not null default 0,last_seen_at timestamptz not null default now(),primary key(user_id,device_id));
+create index if not exists vault_sync_devices_user_seen_idx on vault_sync_devices(user_id,last_seen_at);
