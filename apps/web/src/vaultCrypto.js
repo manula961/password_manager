@@ -13,3 +13,7 @@ export async function createVault(password,items=[]){const salt=crypto.getRandom
 export async function unlockVault(password){const r=await get();if(!r)throw new Error('Vault is not initialized');const key=await derive(password,unb64(r.kdf.salt),['encrypt','decrypt']);try{const check=await decrypt(key,r.check);if(check.aegis!=='vault-check-v1')throw 0;return{key,items:await decrypt(key,r.payload)}}catch{throw new Error('Incorrect master password')}}
 export async function saveVault(key,items){const r=await get();if(!r)throw new Error('Vault is not initialized');r.payload=await encrypt(key,items);await put(r)}
 export async function migrateLegacy(key,items){await saveVault(key,items);localStorage.removeItem('aegis-items-v2')}
+
+export async function exportSyncEnvelope(){const r=await get();if(!r)return null;return{version:1,revision:Number(r.revision||0),updatedAt:new Date().toISOString(),ciphertext:b64(te.encode(JSON.stringify({v:r.v,kdf:r.kdf,check:r.check,payload:r.payload})))}}
+export async function markSynced(revision){const r=await get();if(r){r.revision=revision;await put(r)}}
+export async function importSyncEnvelope(envelope){const remote=JSON.parse(td.decode(unb64(envelope.ciphertext)));await put({...remote,revision:envelope.revision});return true}
