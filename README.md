@@ -3,9 +3,7 @@
 <p align="center"><strong>A local-first web vault and self-hosted sync prototype.</strong></p>
 
 <p align="center">
-  <img alt="React" src="https://img.shields.io/static/v1?label=&amp;message=React&amp;color=4338CA&amp;style=for-the-badge">
-  <img alt="Vite" src="https://img.shields.io/static/v1?label=&amp;message=Vite&amp;color=0F766E&amp;style=for-the-badge">
-  <img alt="PostgreSQL" src="https://img.shields.io/static/v1?label=&amp;message=PostgreSQL&amp;color=475569&amp;style=for-the-badge">
+  <img src="docs/readme-cover.svg" alt="Aegis project illustration" width="1120">
 </p>
 
 <p align="center">
