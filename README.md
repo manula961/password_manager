@@ -1,4 +1,19 @@
-# Aegis Password Manager
+<h1 align="center">🔐 Aegis Password Manager</h1>
+
+<p align="center"><strong>A local-first web vault and self-hosted sync prototype.</strong></p>
+
+<p align="center">
+  <img alt="React" src="https://img.shields.io/static/v1?label=&amp;message=React&amp;color=4338CA&amp;style=for-the-badge">
+  <img alt="Vite" src="https://img.shields.io/static/v1?label=&amp;message=Vite&amp;color=0F766E&amp;style=for-the-badge">
+  <img alt="PostgreSQL" src="https://img.shields.io/static/v1?label=&amp;message=PostgreSQL&amp;color=475569&amp;style=for-the-badge">
+</p>
+
+<p align="center">
+  <a href="#what-is-in-this-repository">What is in this repository</a> · <a href="#run-the-web-app-locally">Run the web app locally</a> · <a href="#run-the-optional-backend">Run the optional backend</a> · <a href="#security-and-project-status">Security and project status</a>
+</p>
+
+---
+
 
 Aegis is a local-first password manager prototype. This repository contains a React web vault, a self-hosted account and sync API, and documentation for future native apps and browser extensions.
 
