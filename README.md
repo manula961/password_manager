@@ -1,33 +1,32 @@
-# Aegis Password Manager — cross-platform foundation
+# Aegis Password Manager
 
-A working first slice of a privacy-first password manager. The web prototype is dependency-free and runs locally; the repository layout reserves platform apps and a shared crypto core.
+Aegis is a local-first password manager prototype. This repository contains a React web vault, a self-hosted account and sync API, and documentation for future native apps and browser extensions.
 
-## Run the Web/PWA prototype
+## What is in this repository
 
-```bash
+| Area | Implementation |
+| --- | --- |
+| [Web vault](apps/web/src/main.jsx) | Vault creation and unlock, login records, search, and password generation |
+| [Vault storage](apps/web/src/vaultCrypto.js) | Browser-side encryption and IndexedDB persistence, with support for encrypted sync envelopes |
+| [API](server/README.md) | Account and session endpoints backed by PostgreSQL, with server-side storage for encrypted vault data |
+| [Platform targets](docs/FEATURES.md) | Web, Android, iOS, desktop, browser extension, and CLI roadmap |
+
+## Run the web app locally
+
+Install Node.js and npm, then run these commands from the repository root.
+
+```sh
 cd apps/web
-python3 -m http.server 8080
-# open http://localhost:8080
+npm install
+npm run dev
 ```
 
-Implemented in this slice: responsive dashboard, unified navigation, vault search, add-login flow, local persistence, Web Crypto password generation, lock/privacy state, Security/Sharing/Activity/Settings surfaces, trusted-device and protection-score UI.
+Open the URL printed by Vite. Use sample entries to try the vault creation, lock and unlock, search, and password generator. Run `npm run build` to create a web build.
 
-## Architecture direction
+## Run the optional backend
 
-- `apps/web` — Web Vault / PWA
-- `apps/android` — Android shell (Kotlin/Compose planned)
-- `apps/desktop` — Windows/macOS/Linux shell (Tauri planned)
-- `apps/browser-extension` — Chrome/Edge/Firefox/Safari extension
-- `packages/crypto-core` — audited shared crypto boundary; no plaintext server processing
-- `packages/shared` — shared models, sync protocol, validation
+The backend uses PostgreSQL and can be run with [Docker Compose](docker-compose.yml). See [server setup](server/README.md) for environment and HTTPS configuration, and [the database guide](docs/DATABASE.md) for the storage model. Production email delivery for verification and password resets still requires integration.
 
-Security note: this prototype deliberately does **not** claim production-grade vault encryption yet. Production cryptography needs an audited design (Argon2id KDF, authenticated encryption, key hierarchy, secure platform keystores, memory/clipboard handling, recovery model, and threat-model review) before real secrets are entrusted to it.
+## Security and project status
 
-
-## Database and sync service
-
-The deployment target is an **Oracle Cloud Infrastructure (OCI) VM** running our own API/sync service and PostgreSQL. Aegis remains zero-knowledge: clients encrypt vault data before sync; the server stores ciphertext, encrypted key envelopes, and minimal sync/account metadata. See `docs/DATABASE.md` and `server/schema.sql`.
-
-## Full product scope
-
-See `docs/FEATURES.md` for the complete vault, generator, autofill, security, privacy, device, sharing, recovery, identity, developer, and cross-platform feature map. iOS/iPadOS and CLI shells are included alongside Web, Android, desktop, and browser-extension targets.
+Aegis is under active development. Use test data while trying the prototype. An independent security audit is pending. The [security policy](SECURITY.md) covers reporting and release gates, and the [threat model](docs/THREAT_MODEL.md) describes the intended client-side encryption boundary.
